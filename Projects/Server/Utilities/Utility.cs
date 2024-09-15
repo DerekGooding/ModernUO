@@ -925,21 +925,54 @@ public static class Utility
         return min + BuiltInRng.Next(max - min + 1);
     }
 
+    /// <summary>Returns a random integer that is within a specified range.</summary>
+    /// <param name="from">The inclusive lower bound of the random number returned.</param>
+    /// <param name="count">The exclusive upper bound of the random number returned. <paramref name="count"/> must be greater than or equal to <paramref name="from"/>.</param>
+    /// <returns>
+    /// A 32-bit signed integer greater than or equal to <paramref name="from"/> and less than <paramref name="count"/>; that is, the range of return values includes <paramref name="from"/>
+    /// but not <paramref name="count"/>. If minValue equals <paramref name="count"/>, <paramref name="minValue"/> is returned.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="from"/> is greater than <paramref name="count"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Random(int from, int count) => BuiltInRng.Next(from, count);
 
+    /// <summary>Returns a random integer that is between zero and the input. Negative returns negative. Positive returns positive</summary>
+    /// <param name="count">The exclusive bound of the random number to be generated. <paramref name="count"/> can be positive or negative.</param>
+    /// <returns>
+    /// A 32-bit signed integer that is between 0, and <paramref name="count"/>; that is, the range of return values ordinarily
+    /// includes 0 but not <paramref name="count"/>. However, if <paramref name="count"/> equals 0, <paramref name="count"/> is returned.
+    /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Random(int count) => count < 0 ? -BuiltInRng.Next(-count) : BuiltInRng.Next(count);
 
+    /// <summary>Returns a random integer that is within a specified range.</summary>
+    /// <param name="from">The inclusive lower bound of the random number returned.</param>
+    /// <param name="count">The exclusive upper bound of the random number returned. <paramref name="count"/> must be greater than or equal to <paramref name="from"/>.</param>
+    /// <returns>
+    /// A 64-bit signed integer greater than or equal to <paramref name="from"/> and less than <paramref name="count"/>; that is, the range of return values includes <paramref name="from"/>
+    /// but not <paramref name="count"/>. If minValue equals <paramref name="count"/>, <paramref name="from"/> is returned.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="from"/> is greater than <paramref name="count"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static long Random(long from, long count) => BuiltInRng.Next(from, count);
 
+    /// <summary>Returns a random integer that is between zero and the input. Negative returns negative. Positive returns positive</summary>
+    /// <param name="count">The exclusive bound of the random number to be generated. <paramref name="count"/> can be positive or negative.</param>
+    /// <returns>
+    /// A 64-bit signed integer that is between 0, and <paramref name="count"/>; that is, the range of return values ordinarily
+    /// includes 0 but not <paramref name="count"/>. However, if <paramref name="count"/> equals 0, <paramref name="count"/> is returned.
+    /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static long Random(long count) => count < 0 ? -BuiltInRng.Next(-count) : BuiltInRng.Next(count);
 
+    /// <summary>Fills the elements of a specified array of bytes with random numbers.</summary>
+    /// <param name="buffer">The array to be filled with random numbers.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="buffer"/> is null.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void RandomBytes(Span<byte> buffer) => BuiltInRng.NextBytes(buffer);
 
+    /// <summary>Returns a random floating-point number that is greater than or equal to 0.0, and less than 1.0.</summary>
+    /// <returns>A double-precision floating point number that is greater than or equal to 0.0, and less than 1.0.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double RandomDouble() => BuiltInRng.NextDouble();
 
