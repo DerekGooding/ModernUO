@@ -32,7 +32,7 @@ public static class ISerializableExtensions
 
     /// <summary>
     /// 
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
     /// <param name="toDelete"><see cref="IEntity"/> to be deleted.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,7 +44,7 @@ public static class ISerializableExtensions
 
     /// <summary>
     /// Adds an item to the <see cref="ICollection{T}"/>.
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
     /// <param name="item">The object to add to the collection.</param>
     /// <exception cref="NotSupportedException">Thrown if the collection is read-only.</exception>
@@ -57,7 +57,7 @@ public static class ISerializableExtensions
 
     /// <summary>
     /// Adds the specified key and value to the <see cref="IDictionary"/>.
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
     /// <param name="key">The object to use as the key of the element to add.</param>
     /// <param name="value">The object to use as the value of the element to add.</param>
@@ -74,7 +74,7 @@ public static class ISerializableExtensions
     /// <summary>
     /// Determines whether the <see cref="IDictionary"/> contains an element with the specified key.
     /// Tries to update a specific key with a value.
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
     /// <param name="key">The key to locate in the <see cref="IDictionary"/>.</param>
     /// <param name="value">The value to update with.</param>
@@ -89,36 +89,42 @@ public static class ISerializableExtensions
             entity.MarkDirty();
             return true;
         }
+
         return false;
     }
 
     /// <summary>
-    /// 
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// Inserts an item into the <see cref="IList"/> at the specified index.
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="list"></param>
-    /// <param name="value"></param>
-    /// <param name="index"></param>
+    /// <param name="item">The object to insert into the <see cref="IList"/>.</param>
+    /// <param name="index">The zero-based index at which the item should be inserted.</param>
+    /// /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="index"/> is not a valid index in the <see cref="IList"/>.
+    /// </exception>
+    /// <exception cref="NotSupportedException">Thrown if the <see cref="IList"/> is read-only or has a fixed size.</exception>
+    /// <exception cref="NullReferenceException">Thrown if <paramref name="item"/> is null in reference-type collections.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Insert<T>(this ISerializable entity, IList<T> list, T value, int index)
+    public static void Insert<T>(this ISerializable entity, IList<T> list, T item, int index)
     {
-        list.Insert(index, value);
+        list.Insert(index, item);
         entity.MarkDirty();
     }
 
     /// <summary>
-    /// 
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// Removes the first occurrence of a specific object from the <see cref="ICollection{T}"/>.
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="list"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
+    /// <param name="item">The object to remove from the collection.</param>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="item"/> was successfully removed from the <see cref="ICollection{T}"/>; otherwise, <see langword="false"/>.
+    /// This method also returns <see langword="false"/> if the <paramref name="item"/> is not found in the <see cref="ICollection{T}"/>.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown if the <see cref="ICollection{T}"/> is read-only.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Remove<T>(this ISerializable entity, ICollection<T> list, T value)
+    public static bool Remove<T>(this ISerializable entity, ICollection<T> list, T item)
     {
-        if (list.Remove(value))
+        if (list.Remove(item))
         {
             entity.MarkDirty();
             return true;
@@ -128,15 +134,15 @@ public static class ISerializableExtensions
     }
 
     /// <summary>
-    /// 
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// Removes the element with the specified key from the <see cref="IDictionary"/>.
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
-    /// <typeparam name="K"></typeparam>
-    /// <typeparam name="V"></typeparam>
-    /// <param name="dict"></param>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
+    /// <param name="key">The key of the element to remove.</param>
+    /// <returns>
+    /// <see langword="true"/> when a value is found in the dictionary with a specified <paramref name="key"/>; <see langword="false"/>
+    /// when the dictionary cannot find a value associated with the specified <paramref name="key"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Remove<K, V>(this ISerializable entity, IDictionary<K, V> dict, K key, out V value)
     {
@@ -151,7 +157,7 @@ public static class ISerializableExtensions
 
     /// <summary>
     /// Removes the item at the specified index of the <see cref="IList"/>.
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
     /// <param name="index">The zero-based index of the item to remove.</param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -167,7 +173,7 @@ public static class ISerializableExtensions
 
     /// <summary>
     /// Removes all items from the <see cref="ICollection{T}"/>.
-    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty.</para>
     /// </summary>
     /// <exception cref="NotSupportedException">Thrown if the collection is read-only.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
