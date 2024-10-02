@@ -21,12 +21,20 @@ namespace Server;
 
 public static class ISerializableExtensions
 {
+    /// <summary>
+    /// Currently in development
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarkDirty(this ISerializable entity)
     {
         // TODO: Add dirty tracking back
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="toDelete"><see cref="IEntity"/> to be deleted.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Delete(this ISerializable entity, IEntity toDelete)
     {
@@ -34,20 +42,64 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// Adds an item to the <see cref="ICollection{T}"/>.
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="item">The object to add to the collection.</param>
+    /// <exception cref="NotSupportedException">Thrown if the collection is read-only.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Add<T>(this ISerializable entity, ICollection<T> list, T value)
+    public static void Add<T>(this ISerializable entity, ICollection<T> list, T item)
     {
-        list.Add(value);
+        list.Add(item);
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// Adds the specified key and value to the <see cref="IDictionary"/>.
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="key">The object to use as the key of the element to add.</param>
+    /// <param name="value">The object to use as the value of the element to add.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if an element with the same key already exists in the <see cref="IDictionary"/>.</exception>
+    /// <exception cref="NotSupportedException">Thrown if the <see cref="IDictionary"/> is read-only.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Add<K, V>(this ISerializable entity, IDictionary<K, V> dict, K key, V value)
     {
-        dict[key] = value;
+        dict.Add(key, value);
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// Determines whether the <see cref="IDictionary"/> contains an element with the specified key.
+    /// Tries to update a specific key with a value.
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="key">The key to locate in the <see cref="IDictionary"/>.</param>
+    /// <param name="value">The value to update with.</param>
+    /// <returns><see langword="true"/> if the <see cref="IDictionary"/> contains an element with the key; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryUpdate<K, V>(this ISerializable entity, IDictionary<K, V> dict, K key, V value)
+    {
+        if (dict.ContainsKey(key))
+        {
+            dict[key] = value;
+            entity.MarkDirty();
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <param name="value"></param>
+    /// <param name="index"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Insert<T>(this ISerializable entity, IList<T> list, T value, int index)
     {
@@ -55,6 +107,14 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Remove<T>(this ISerializable entity, ICollection<T> list, T value)
     {
@@ -67,6 +127,16 @@ public static class ISerializableExtensions
         return false;
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    /// <param name="dict"></param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Remove<K, V>(this ISerializable entity, IDictionary<K, V> dict, K key, out V value)
     {
@@ -79,6 +149,15 @@ public static class ISerializableExtensions
         return false;
     }
 
+    /// <summary>
+    /// Removes the item at the specified index of the <see cref="IList"/>.
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="index">The zero-based index of the item to remove.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="index"/> is not a valid index in the list.
+    /// </exception>
+    /// <exception cref="NotSupportedException">Thrown if the <see cref="IList"/> is read-only.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void RemoveAt<T>(this ISerializable entity, IList<T> list, int index)
     {
@@ -86,6 +165,11 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// Removes all items from the <see cref="ICollection{T}"/>.
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <exception cref="NotSupportedException">Thrown if the collection is read-only.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clear<T>(this ISerializable entity, ICollection<T> list)
     {
@@ -93,6 +177,12 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="timer"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Stop(this ISerializable entity, Timer timer)
     {
@@ -100,6 +190,12 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="timer"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Start(this ISerializable entity, Timer timer)
     {
@@ -107,6 +203,14 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="timer"></param>
+    /// <param name="delay"></param>
+    /// <param name="interval"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Restart(this ISerializable entity, Timer timer, TimeSpan delay, TimeSpan interval)
     {
@@ -120,6 +224,14 @@ public static class ISerializableExtensions
         }
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="entity"></param>
+    /// <param name="list"></param>
+    /// <param name="value"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Add<T>(this ISerializable entity, ref List<T> list, T value)
     {
@@ -127,6 +239,16 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    /// <param name="entity"></param>
+    /// <param name="dict"></param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Add<K, V>(this ISerializable entity, ref Dictionary<K, V> dict, K key, V value)
     {
@@ -134,6 +256,15 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="entity"></param>
+    /// <param name="list"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Remove<T>(this ISerializable entity, ref List<T> list, T value)
     {
@@ -146,6 +277,13 @@ public static class ISerializableExtensions
         return false;
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="entity"></param>
+    /// <param name="list"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clear<T>(this ISerializable entity, ref List<T> list)
     {
@@ -153,6 +291,13 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="entity"></param>
+    /// <param name="set"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clear<T>(this ISerializable entity, ref HashSet<T> set)
     {
@@ -160,6 +305,14 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    /// <param name="entity"></param>
+    /// <param name="dict"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clear<K, V>(this ISerializable entity, ref Dictionary<K, V> dict)
     {
@@ -167,6 +320,12 @@ public static class ISerializableExtensions
         entity.MarkDirty();
     }
 
+    /// <summary>
+    /// 
+    /// <para>Marks this <see cref="ISerializable"/> object as dirty</para>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="timer"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Stop(this ISerializable entity, ref Timer timer)
     {
