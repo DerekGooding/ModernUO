@@ -38,11 +38,15 @@ public class BufferWriter : IGenericWriter
         get => _index;
         set
         {
-            if (value < 0 || value > _buffer.Length)
+            if (value < 0)
             {
-                // If you are receiving this exception and your value is too large, you may need to use `Resize`
-                // If you are receiving this exception and your value is negative, you probably used Seek incorrectly.
-                throw new ArgumentOutOfRangeException(nameof(value));
+                throw new ArgumentOutOfRangeException(nameof(value)
+                    , "If you are receiving this exception and your value is negative, you probably used Seek incorrectly.");
+            }
+            if(value > _buffer.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value)
+                    , "If you are receiving this exception and your value is too large, you may need to use `Resize`.");
             }
 
             _index = value;
