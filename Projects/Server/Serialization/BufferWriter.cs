@@ -26,7 +26,7 @@ using Server.Text;
 namespace Server;
 
 /// <summary>
-/// Writes bits of data to a buffer in memory.
+/// Writes bits of data to a buffer in memory in little-endian format.
 /// </summary>
 public class BufferWriter : IGenericWriter
 {
@@ -192,9 +192,9 @@ public class BufferWriter : IGenericWriter
     }
 
     /// <summary>
-    /// 
+    /// Writes a <see cref="string"/> to the buffer. If PrefixStrings is <see langword="true"/> then write a preceeding identifier byte.
     /// </summary>
-    /// <param name="value"></param>
+    /// <param name="value">The <see cref="string"/> to be written as <see cref="byte"/> data to the buffer.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(string value)
     {
@@ -216,6 +216,9 @@ public class BufferWriter : IGenericWriter
         }
     }
 
+    /// <summary>
+    /// Write a <see cref="long" /> into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(long value)
     {
@@ -225,6 +228,9 @@ public class BufferWriter : IGenericWriter
         Index += 8;
     }
 
+    /// <summary>
+    /// Write a <see cref="ulong" /> into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ulong value)
     {
@@ -234,6 +240,9 @@ public class BufferWriter : IGenericWriter
         Index += 8;
     }
 
+    /// <summary>
+    /// Write a <see cref="int" /> into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(int value)
     {
@@ -243,6 +252,9 @@ public class BufferWriter : IGenericWriter
         Index += 4;
     }
 
+    /// <summary>
+    /// Write a <see cref="uint" /> into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(uint value)
     {
@@ -252,6 +264,9 @@ public class BufferWriter : IGenericWriter
         Index += 4;
     }
 
+    /// <summary>
+    /// Write a <see cref="short" /> into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(short value)
     {
@@ -261,6 +276,9 @@ public class BufferWriter : IGenericWriter
         Index += 2;
     }
 
+    /// <summary>
+    /// Write a <see cref="ushort" /> into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ushort value)
     {
@@ -270,6 +288,9 @@ public class BufferWriter : IGenericWriter
         Index += 2;
     }
 
+    /// <summary>
+    /// Write a <see cref="double" /> into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(double value)
     {
@@ -279,6 +300,9 @@ public class BufferWriter : IGenericWriter
         Index += 8;
     }
 
+    /// <summary>
+    /// Write a <see cref="float" /> into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(float value)
     {
@@ -287,6 +311,7 @@ public class BufferWriter : IGenericWriter
         BinaryPrimitives.WriteSingleLittleEndian(_buffer.AsSpan((int)_index), value);
         Index += 4;
     }
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(byte value)
@@ -309,6 +334,9 @@ public class BufferWriter : IGenericWriter
         _buffer[Index++] = *(byte*)&value; // up to 30% faster to dereference the raw value on the stack
     }
 
+    /// <summary>
+    /// Convert a <see cref="Serial"/> into <see cref="uint"/> then write into a span of bytes, as little endian. Flushes the buffer if neccessary.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(Serial serial) => Write(serial.Value);
 
