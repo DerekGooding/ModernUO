@@ -25,6 +25,9 @@ using Server.Text;
 
 namespace Server;
 
+/// <summary>
+/// Writes bits of data to a buffer in memory.
+/// </summary>
 public class BufferWriter : IGenericWriter
 {
     private readonly ConcurrentQueue<Type> _types;
@@ -60,6 +63,12 @@ public class BufferWriter : IGenericWriter
 
     private byte[] _buffer;
 
+    /// <summary>
+    /// Writes bits of data to a buffer in memory.
+    /// </summary>
+    /// <param name="buffer">The array of <see cref="byte"/> to be wrapped and managed by this <see cref="BufferWriter"/></param>
+    /// <param name="prefixStr">Specifies whether strings will be prefixed with a bool byte to identify it is a string.</param>
+    /// <param name="types"></param>
     public BufferWriter(byte[] buffer, bool prefixStr, ConcurrentQueue<Type> types = null)
     {
         _prefixStrings = prefixStr;
@@ -68,10 +77,21 @@ public class BufferWriter : IGenericWriter
         _types = types;
     }
 
+    /// <summary>
+    /// Writes bits of data to a buffer in memory.
+    /// </summary>
+    /// <param name="prefixStr">Specifies whether strings will be prefixed with a bool byte to identify it is a string.</param>
+    /// <param name="types"></param>
     public BufferWriter(bool prefixStr, ConcurrentQueue<Type> types = null) : this(0, prefixStr, types)
     {
     }
 
+    /// <summary>
+    /// Writes bits of data to a buffer in memory.
+    /// </summary>
+    /// <param name="count">Initializes a <see cref="byte"/> array of length <paramref name="count"/></param>
+    /// <param name="prefixStr">Specifies whether strings will be prefixed with a bool byte to identify it is a string.</param>
+    /// <param name="types"></param>
     public BufferWriter(int count, bool prefixStr, ConcurrentQueue<Type> types = null)
     {
         _prefixStrings = prefixStr;
@@ -84,16 +104,22 @@ public class BufferWriter : IGenericWriter
 
     protected virtual int BufferSize => 256;
 
+    /// <summary>
+    /// The wrapped buffer as an array of <see cref="byte"/>.
+    /// </summary>
     public byte[] Buffer => _buffer;
 
     public virtual void Close()
     {
     }
 
+    /// <summary>
+    /// Change the buffer size. Cannot be set to less than 1.Buffer lengths of 0 or less are dangerous.
+    /// </summary>
+    /// <param name="size">The new size of the buffer. If less than 1, will not change the size.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Resize(int size)
     {
-        // We shouldn't ever resize to a 0 length buffer. That is dangerous
         if (size <= 0)
         {
             size = BufferSize;
@@ -111,10 +137,14 @@ public class BufferWriter : IGenericWriter
 
     public virtual void Flush() => Resize(Math.Clamp(_buffer.Length * 2, BufferSize, _buffer.Length + 1024 * 1024 * 64));
 
+    /// <summary>
+    /// Will call <see cref="Flush"/> if the <paramref name="amount"/> is greater than the empty room in the buffer.
+    /// </summary>
+    /// <param name="amount">The amount of room to check. If greater than remaining room in the buffer, call <see cref="Flush"/></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void FlushIfNeeded(int amount)
     {
-        if (Index + amount > _buffer.Length)
+        if (amount > _buffer.Length - Index)
         {
             Flush();
         }
@@ -161,6 +191,10 @@ public class BufferWriter : IGenericWriter
         });
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="value"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(string value)
     {
